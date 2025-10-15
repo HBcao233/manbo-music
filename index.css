@@ -100,7 +100,8 @@ body:has(.player.playing) .logo-icon {
 }
 
 /* 分类标签 */
-.category-tags {
+.tags {
+  position: relative;
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
@@ -113,7 +114,7 @@ body:has(.player.playing) .logo-icon {
 
 .tag {
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #ff6b9d, #764ba2);
+  background-image: linear-gradient(135deg, #ff6b9d, #764ba2);
   color: white;
   border-radius: 20px;
   cursor: pointer;
@@ -128,8 +129,30 @@ body:has(.player.playing) .logo-icon {
 }
 
 .tag.active {
-  background: var(--accent-color);
-  color: var(--text-dark);
+  background: var(--accent-color) !important;
+  color: var(--text-dark) !important;
+}
+
+.search-box {
+  border-radius: 20px;
+  width: 100%;
+  display: flex;
+}
+
+.search-input {
+  width: 90%;
+  height: 100%;
+  outline: none;
+  border: none;
+  border-bottom: 2px solid var(--primary);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 0 .5rem;
+  background: transparent;
+}
+
+.search {
+  margin-left: 0.5rem;
 }
 
 /* 音乐卡片网格 */
@@ -158,7 +181,7 @@ body:has(.player.playing) .logo-icon {
   width: 100%;
   height: 200px;
   object-fit: cover;
-  background: linear-gradient(135deg, #ff6b9d, #764ba2);
+  background-color: #ff6b9d;
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
@@ -194,31 +217,37 @@ body:has(.player.playing) .logo-icon {
   margin-bottom: 0.5rem;
 }
 
-.music-category {
-  width: fit-content;
-  font-size: 1rem;
-  color: #fff;
-  padding: 0.3rem;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .music-artist {
   color: var(--text-light);
   font-size: 0.9rem;
-  margin-bottom: 1rem;
 }
 
 .music-bvid {
   font-size: 0.8rem;
 }
 
+.music-tags {
+  display: flex;
+  margin-top: 0.5rem;
+}
+
+.music-tag {
+  width: fit-content;
+  font-size: 0.7rem;
+  color: #fff;
+  padding: 0.16rem 0.3rem;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2px;
+}
+
 .music-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 0.5rem;
 }
 
 .play-count {
@@ -245,12 +274,21 @@ body:has(.player.playing) .logo-icon {
   z-index: 1001;
   transform: translateY(100%);
   transition: transform 0.3s;
-  padding: 1rem 2rem;
 }
 
 .player.active {
+  transform: translateY(3.2rem);
+}
+.player.hover {
   transform: translateY(0);
 }
+
+.player > .content {
+  position: relative;
+  z-index: 1002;
+  padding: 0.5rem 1.5rem;
+}
+
 
 .player-info {
   display: flex;
@@ -285,10 +323,13 @@ body:has(.player.playing) .logo-icon {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+.player.hover .control-buttons {
+  margin: 0;
 }
 
-.control-buttons button {
+button {
   background: transparent;
   border: none;
   color: var(--primary);
@@ -323,6 +364,12 @@ body:has(.player.playing) .logo-icon {
   content: "\f04c";
 }
 
+.player:not(.hover) .play-pause {
+  position: absolute;
+  top: .7rem;
+  right: 1rem;
+}
+
 .progress-container {
   width: 100%;
   display: flex;
@@ -344,7 +391,6 @@ body:has(.player.playing) .logo-icon {
   height: 100%;
   background: var(--primary);
   border-radius: 5px;
-  width: 30%;
 }
 
 .player-actions {
@@ -355,22 +401,53 @@ body:has(.player.playing) .logo-icon {
   justify-content: flex-end;
 }
 
-
-/* 加载动画 */
-.loading {
-  text-align: center;
-  padding: 3rem;
-  color: white;
+.player-list-btn {
+  position: absolute;
+  top: .5rem;
+  right: 1.5rem;
+  visibility: hidden;
 }
 
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto;
+.player.hover .player-list-btn {
+  visibility: visible;
+}
+
+.player-list {
+  position: absolute;
+  top: -8rem;
+  left: 0;
+  width: 100%;
+  height: 8rem;
+  background: #fff;
+  transform: translateY(8rem);
+  visibility: hidden;
+  transition: all .3s ease-in-out;
+  border-bottom: 1px solid #e6e6e6;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  overflow: hidden;
+  z-index: 1001;
+}
+
+.player-list.active {
+  transition: transform .3s ease-in-out;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.player-list .items {
+  height: 100%;
+  overflow: scroll;
+}
+
+.player-list-item {
+  display: flex;
+  padding: 0.5rem 1rem;
+  color: #101010;
+}
+.player-list-item.playing {
+  color: #df4b4b;
+  background: #f6f6f6;
 }
 
 @keyframes spin {

@@ -11,7 +11,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="index.css">
-  <script src="json5.min.js"></script>
+  <script src="json5_v2.2.3.min.js"></script>
   <script src="index.js"></script>
 </head>
 <body>
@@ -29,43 +29,49 @@
   </header>
 
   <div class="container">
-    <div class="category-tags">
-      <button class="tag active" data-category="all">全部</button>
-      <button class="tag" data-category="vanilla">纯净哈基米</button>
+    <div class="tags">
+      <form class="search-box">
+        <input class="search-input" placeholder="搜索..." name="query"/>
+        <button type="submit" class="search">
+          <i class="fas fa-search"></i>
+        </button>
+      </form>
     </div>
 
     <div class="music-grid" id="musicGrid"></div>
-
-    <div class="loading" id="loading" style="display: none;">
-      <div class="loading-spinner"></div>
-      <p>加载中...</p>
-    </div>
   </div>
 
   <div class="player">
     <audio style="display: none"></audio>
-    <div class="player-info">
-      <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="当前播放" class="player-cover">
-      <div class="player-details">
-        <div class="song-title"></div>
-        <div class="song-artist"></div>
-      </div>
+    <div class="player-list">
+      <div class="items"></div>
     </div>
     
-    <div class="player-controls">
-      <div class="control-buttons">
-        <button><i class="fas fa-random"></i></button>
-        <button><i class="fas fa-step-backward"></i></button>
-        <button class="play-pause"><i class="fas fa-play"></i></button>
-        <button><i class="fas fa-step-forward"></i></button>
-        <button><i class="fas fa-redo"></i></button>
-      </div>
-      <div class="progress-container">
-        <span class="currentTime">1:23</span>
-        <div class="progress-bar">
-          <div class="progress"></div>
+    <div class="content">
+      <button class="player-list-btn"><i class="fas fa-list"></i></button>
+      <div class="player-info">
+        <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="当前播放" class="player-cover">
+        <div class="player-details">
+          <div class="song-title"></div>
+          <div class="song-artist"></div>
         </div>
-        <span class="duration">4:05</span>
+      </div>
+      
+      <div class="player-controls">
+        <div class="control-buttons">
+          <button><i class="fas fa-random"></i></button>
+          <button class="player-previous"><i class="fas fa-step-backward"></i></button>
+          <button class="play-pause"><i class="fas fa-play"></i></button>
+          <button class="player-next"><i class="fas fa-step-forward"></i></button>
+          <button><i class="fas fa-redo"></i></button>
+        </div>
+        <div class="progress-container">
+          <span class="currentTime">1:23</span>
+          <div class="progress-bar">
+            <div class="progress"></div>
+          </div>
+          <span class="duration">4:05</span>
+        </div>
       </div>
     </div>
 
