@@ -96,7 +96,7 @@ body:has(.player.playing) .logo-icon {
   max-width: 1400px;
   margin: 2rem auto;
   padding: 0 10px;
-  padding-bottom: 8.45rem;
+  padding-bottom: 4rem;
 }
 
 /* 分类标签 */
@@ -261,6 +261,13 @@ body:has(.player.playing) .logo-icon {
 .duration {
   color: var(--text-light);
   font-size: 0.85rem;
+}
+
+footer {
+  text-align: center;
+}
+footer a {
+  color: white;
 }
 
 /* 播放器 */
