@@ -1,0 +1,32 @@
+[
+  {
+    title: 'Golden Hour',
+    artist: '慎啸',
+    category: 'vanilla',
+    playCount: 728267,
+    duration: 211,
+    cover: 'golden_hour.jpg',
+    url: '【纯净哈基米】Golden Hour - 慎啸.mp3',
+    bvid: 'BV1aQnGzZE8e',
+  },
+  {
+    title: "基米地（凄美地）",
+    artist: "kizznoluv",
+    category: "vanilla",
+    playCount: 89758,
+    duration: 91,
+    cover: '基米地.jpg',
+    url: '【纯净哈基米】基米地（凄美地） - kizznoluv.mp3',
+    bvid: 'BV1d5phzXEFs',
+  },
+  {
+    title: '匆匆哈年',
+    artist: '慎啸',
+    category: 'vanilla',
+    playCount: 100422,
+    duration: 242,
+    cover: '匆匆哈年.jpg',
+    url: '【纯净哈基米】匆匆哈年（完整版） - 慎啸.mp3',
+    bvid: 'BV1pc42zpEX7',
+  },
+]
