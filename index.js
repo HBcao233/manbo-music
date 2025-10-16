@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // 歌词
       $('.player-lyric-btn').addEventListener('click', () => {
-        $('.player-lyric').classList.add('active');
+        $('.player-lyric').classList.toggle('active');
       });
       
     }
@@ -266,7 +266,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     renderLyric() {
-      if (!this.music.lyric) return;
+      if (!this.music.lyric) {
+        $('.player-lyric .items').innerHTML = '<div style="color: #555555; display: flex; justify-content: center; font-size: 14px">暂无歌词...</div>';
+        return;
+      }
       $('.player-lyric .items').innerHTML = '';
       fetch(`lyric/${this.music.lyric}`).then(r => r.text()).then(text => {
         const lines = text.split('\n'); // 按行分割
@@ -327,6 +330,11 @@ document.addEventListener('DOMContentLoaded', () => {
     'ai': {
       name: 'AI歌曲',
       bgcolor: '#c139ff',
+      color: '#fff',
+    },
+    'classical': {
+      name: '古典哈基米',
+      bgcolor: '#e87c56',
       color: '#fff',
     },
   }
@@ -402,7 +410,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function createMusicCard(music) {
     const card = document.createElement('div');
     card.className = 'music-card';
-    let tag = music.tags.map(x => `<div class="music-tag" style="background: ${tags[x].bgcolor}">${tags[x].name}</div>`).join('');
+    let tag = music.tags.map(x => {
+      const tagx = tags[x] || {
+        name: '未知标签',
+        bgcolor: '#3f3f3f',
+        color: '#fff',
+      };
+      return `<div class="music-tag" style="background: ${tagx.bgcolor}">${tagx.name}</div>`;
+    }).join('');
     card.innerHTML = `
       <div class="music-cover" style="background-image: url(cover/${music.cover})"></div>
       <div class="music-info">
