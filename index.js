@@ -16,6 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const setJSON = (k, v) => {
     window.localStorage.setItem(k, JSON.stringify(v));
   }
+  const setParam = (k, v) => {
+    let params = new URLSearchParams(window.location.search);
+    params.set(k, v);
+    let url = new URL(window.location.href);
+    url.search = params;
+    window.history.replaceState(null, '', url);
+  }
   const formatTime = (t) => {
     let s = Math.floor(t % 60);
     if (s < 10) s = '0' + s;
@@ -79,6 +86,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       this.audio.addEventListener('timeupdate', this.progressUpdate.bind(this));
       
+            // 上一曲 / 下一曲
+      $('.player-previous').addEventListener('click', this.previousMusic.bind(this));
+      $('.player-next').addEventListener('click', this.nextMusic.bind(this));
+      
+      // 播放结束
+      this.audio.addEventListener('ended', this.onEnd.bind(this));
+      
       // 播放列表
       $('.player-list-btn').addEventListener('click', this.toggleList.bind(this));
       let timer;
@@ -94,12 +108,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       
-      // 上一曲 / 下一曲
-      $('.player-previous').addEventListener('click', this.previousMusic.bind(this));
-      $('.player-next').addEventListener('click', this.nextMusic.bind(this));
+      // 歌词
+      $('.player-lyric-btn').addEventListener('click', () => {
+        $('.player-lyric').classList.add('active');
+      });
       
-      // 播放结束
-      this.audio.addEventListener('ended', this.onEnd.bind(this));
     }
     
     show() {
@@ -150,6 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
       this.cover.src = `cover/${this.music.cover}`;
       $('.player .currentTime').innerText = formatTime(0);
       $('.player .duration').innerText = formatTime(this.music.duration);
+      this.renderLyric();
     }
     
     addMusic(music_id) {
@@ -228,10 +242,64 @@ document.addEventListener('DOMContentLoaded', () => {
       $('.player .currentTime').innerText = formatTime(this.currentTime);
       let percent = this.currentTime / this.duration * 100;
       this.progress.style.width = percent + '%';
+      
+      if (this.music.lyrics) {
+        let index = 0;
+        while (this.music.lyrics[index] && this.music.lyrics[index].time <= this.currentTime + 0.3) {
+          index++;
+        }
+        index--;
+        let t;
+        if (t = $('.player-lyric div.playing')) t.classList.remove('playing');
+        if (t = $(`.player-lyric div[data-index="${index}"]`)) {
+          t.classList.add('playing');
+          $('.player-lyric .items').scrollTo({
+            top: t.offsetTop - 100,
+            behavior: 'smooth'
+          });
+        }
+      }
     }
     
     onEnd() {
       this.nextMusic();
+    }
+    
+    renderLyric() {
+      if (!this.music.lyric) return;
+      $('.player-lyric .items').innerHTML = '';
+      fetch(`lyric/${this.music.lyric}`).then(r => r.text()).then(text => {
+        const lines = text.split('\n'); // 按行分割
+        this.music.lyrics = [];
+        const timeRegex = /\[(\d{2}):(\d{2})\.(\d{2})\](.*)/; // 正则表达式匹配时间戳和歌词
+        let index = 0;
+        lines.forEach(line => {
+          const match = line.match(timeRegex);
+          if (!match) return;
+          const minutes = parseInt(match[1], 10);
+          const seconds = parseInt(match[2], 10);
+          const milliseconds = parseInt(match[3], 10);
+          const time = minutes * 60 + seconds + milliseconds / 1000;
+          const lyricText = match[4];
+  
+          // 存储解析后的数据
+          this.music.lyrics.push({
+            time: time,
+            text: lyricText
+          });
+          let t = document.createElement('div');
+          t.classList.add('lyric')
+          t.dataset.index = index;
+          t.dataset.time = formatTime(time);
+          t.innerText = lyricText;
+          t.onclick = () => {
+            this.currentTime = time;
+          }
+          $('.player-lyric .items').appendChild(t);
+          index++;
+        });
+      });
+      
     }
   }
   
@@ -251,11 +319,22 @@ document.addEventListener('DOMContentLoaded', () => {
       bgcolor: 'brown',
       color: '#fff',
     },
+    'HaNiuMo': {
+      name: '哈牛魔',
+      bgcolor: 'brown',
+      color: '#fff',
+    },
+    'ai': {
+      name: 'AI歌曲',
+      bgcolor: '#c139ff',
+      color: '#fff',
+    },
   }
  
   let musicData = [];
   const getMusic = (music_id) => {
-    let left = 0;
+    return musicData[music_id - 1];
+    /*let left = 0;
     let right = musicData.length - 1;
     while (left <= right) {
       let mid = left + Math.floor((right - left) / 2);
@@ -267,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
         right = mid - 1; // 目标在左半部分
       }
     }
-    return -1; // 目标未找到
+    return -1; // 目标未找到*/
   }
   let currentTag = 'all';
   let currentSearch = '';
@@ -277,10 +356,15 @@ document.addEventListener('DOMContentLoaded', () => {
     musicData = JSON5.parse(text);
 
     let t;
-    if (t = (new URLSearchParams(window.location.search)).get('search')) {
+    let params = (new URLSearchParams(window.location.search));
+    if (t = params.get('tag')) {
+      currentTag = t;
+    }
+    if (t = params.get('search')) {
       $('.search-input').value = t;
-      searchMusic(t);
-    } else renderMusicGrid(musicData);
+      currentSearch = t;
+    } 
+    renderMusicGrid();
     if (getValue('musicList')) {
       player.musicList = getJSON('musicList');
       player.index = getInt('currentMusic') || 0;
@@ -290,7 +374,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 渲染音乐网格
-  function renderMusicGrid(data) {
+  function renderMusicGrid() {
+    let data = musicData;
+    if (currentTag !== 'all') {
+      data = data.filter(music => music.tags.includes(currentTag));
+    }
+    if (currentSearch) {
+      data = data.filter(music => 
+        (music.title.toLowerCase().includes(currentSearch.toLowerCase()) ||
+        music.artist.toLowerCase().includes(currentSearch.toLowerCase()))
+      );
+    }
+    
     const grid = document.getElementById('musicGrid');
     if (data.length === 0) {
       grid.innerHTML = '<div style="color: #f6f6f6; text-align: center">无结果...</div>';
@@ -347,18 +442,27 @@ document.addEventListener('DOMContentLoaded', () => {
       tag.addEventListener('click', function () {
         $$('.tags .tag').forEach(t => t.classList.remove('active'));
         this.classList.add('active');
-        filterByTag(this.dataset.tag);
+        
+        currentTag = k;
+        setParam('tag', k);
+        renderMusicGrid();
       });
       $('.tags').appendChild(tag);
     }
     
     // 搜索 
-    $('.search-box').addEventListener('submit', function (e) {
+    $('.search-box').addEventListener('submit', (e) => {
       e.preventDefault();
-      searchMusic((new FormData(this)).get('query'));
+      const query = $('.search-input').value;
+      currentSearch = query;
+      setParam('search', query);
+      renderMusicGrid();
     });
-    $('.search-input').addEventListener('change', function (e) {
-      searchMusic(this.value);
+    $('.search-input').addEventListener('change', (e) => {
+      const query = $('.search-input').value;
+      currentSearch = query;
+      setParam('search', query);
+      renderMusicGrid();
     });
     
     // resize
@@ -369,51 +473,6 @@ document.addEventListener('DOMContentLoaded', () => {
         $('.player').style.display = '';
       }
     });
-  }
-
-  // 按分类筛选
-  function filterByTag(tag) {
-    currentTag = tag;
-    let filtered = musicData;
-    if (tag !== 'all') {
-      filtered = filtered.filter(music => music.tags.includes(tag));
-    }
-    if (currentSearch) {
-      filtered = filtered.filter(music => 
-        (music.title.toLowerCase().includes(currentSearch.toLowerCase()) ||
-        music.artist.toLowerCase().includes(currentSearch.toLowerCase()))
-      );
-    }
-    
-    renderMusicGrid(filtered);
-  }
-
-  // 搜索音乐
-  function searchMusic(query) {
-    let params = new URLSearchParams(window.location.search);
-    params.set('search', query);
-    let url = new URL(window.location.href);
-    url.search = params;
-    window.history.replaceState(null, '', url);
-    currentSearch = query;
-    if (!query) {
-      let filtered = musicData;
-      if (currentTag !== 'all') {
-        filtered = filtered.filter(music => music.tags.includes(currentTag))
-      }
-      renderMusicGrid(filtered);
-      return;
-    }
-    query = query.toLowerCase();
-    let filtered = musicData.filter(music => 
-      (music.title.toLowerCase().includes(query) ||
-      music.artist.toLowerCase().includes(query))
-    );
-    if (currentTag !== 'all') {
-      filtered = filtered.filter(music => music.tags.includes(currentTag))
-    }
-    
-    renderMusicGrid(filtered);
   }
 
   // 添加键盘快捷键

@@ -9,8 +9,9 @@
   <link rel="icon" href="https://i.postimg.cc/h43dBD2F/c.jpg">
   <title>哈基米音乐</title>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="css/fontawesome_v7.1.0_pro.css">
+  <link rel="stylesheet" href="css/solid.css">
+  <link rel="stylesheet" href="css/index.css">
   <script src="json5_v2.2.3.min.js"></script>
   <script src="index.js"></script>
 </head>
@@ -33,7 +34,7 @@
       <form class="search-box">
         <input class="search-input" placeholder="搜索..." name="query"/>
         <button type="submit" class="search">
-          <i class="fas fa-search"></i>
+          <i class="fa-solid fa-magnifying-glass"></i>
         </button>
       </form>
     </div>
@@ -47,12 +48,16 @@
 
   <div class="player">
     <audio style="display: none"></audio>
-    <div class="player-list">
+    <div class="player-layer player-lyric">
+      <div class="items"></div>
+    </div>
+    <div class="player-layer player-list">
       <div class="items"></div>
     </div>
     
     <div class="content">
       <button class="player-list-btn"><i class="fas fa-list"></i></button>
+      <button class="player-lyric-btn"><i class="fa-solid fa-angle-up"></i></button>
       <div class="player-info">
         <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="当前播放" class="player-cover">
         <div class="player-details">

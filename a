@@ -1,0 +1,5 @@
+ffmpeg -i 1.jpg -i 1.mp3 -c:a copy -map 0:v -map 1:a -metadata title="【纯净哈基米】夜哈（夜曲）" -metadata artist="劉俊朗" -metadata album="曼波" -metadata:s:v title="Front cover" -metadata:s:v comment="Cover (front)" "【纯净哈基米】夜哈（夜曲） - 劉俊朗.mp3"
+
+【夜哈-哔哩哔哩】 https://b23.tv/H0qVGs8
+
+【《我的哈基是咪做的》-哔哩哔哩】 https://b23.tv/NwZyLYr
