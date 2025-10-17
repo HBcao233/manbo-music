@@ -44,10 +44,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return count.toString();
   }
+  function easeOutQuad(t) {
+    return 1.74 * t ** 2 - 0.74 * t** 3;
+  }
+  function scrollTo(element, to, duration) {
+    const start = element.scrollTop;
+    const change = to - start;
+    let startTime = null;
+
+    function animateScroll(currentTime) {
+      if (element.scrolling) return;
+      if (startTime === null) {
+        startTime = currentTime;
+      }
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+      const easedProgress = easeOutQuad(progress); // 使用缓动函数
+      element.scrollTop = start + change * easedProgress;
+
+      if (timeElapsed < duration) {
+        requestAnimationFrame(animateScroll);
+      }
+    }
+    requestAnimationFrame(animateScroll);
+  }
+
   class Player {
     constructor() {
       this.player = $('.player');
       this.audio = $('.player audio');
+      this.audio.volume = 0.5;
       this.title = $('.song-title');
       this.artist = $('.song-artist');
       this.cover = $('.player-cover');
@@ -94,8 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
       this.audio.addEventListener('ended', this.onEnd.bind(this));
       
       // 播放列表
-      $('.player-list-btn').addEventListener('click', this.toggleList.bind(this));
-      let timer;
+      $('.player-list-btn').addEventListener('click', this.toggleLayer.bind(this, 'list'));
+      let timer = null;
       document.addEventListener('click', (e) => {
         if (!e.target.closest('.player')) {
           this.hideList();
@@ -103,16 +129,30 @@ document.addEventListener('DOMContentLoaded', () => {
           this.player.classList.add('hover');
           clearTimeout(timer);
           timer = setTimeout(() => {
+            if ($('.player:has(.player-layer.active)')) return;
             this.player.classList.remove('hover');
           }, 3000);
         }
       });
       
       // 歌词
-      $('.player-lyric-btn').addEventListener('click', () => {
-        $('.player-lyric').classList.toggle('active');
-      });
+      $('.player-lyric-btn').addEventListener('click', this.toggleLayer.bind(this, 'lyric'));
       
+      let lyric_scroll_timer = null;
+      const preventAutoScroll = () => {
+        console.log('x');
+        $('.player-lyric .items').scrolling = true;
+        clearTimeout(lyric_scroll_timer);
+        lyric_scroll_timer = setTimeout(() => {
+          $('.player-lyric .items').scrolling = false;
+        }, 2000);
+      }
+      $('.player-lyric .items').addEventListener('wheel', () => {
+        preventAutoScroll()
+      })
+      $('.player-lyric .items').addEventListener('touchmove', (e) => {
+        preventAutoScroll()
+      })
     }
     
     show() {
@@ -136,22 +176,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     
-    get listShowed() {
-      return $('.player-list').classList.contains('active');
-    }
-    
-    showList() { 
+    showLayer(target='list') {
+      const t = $('.player-layer.active');
+      if (t && !t.classList.contains('player-' + target)) {
+        t.classList.remove('active');
+      }
       this.renderList();
-      $('.player-list').classList.add('active');
+      $('.player-' + target).classList.add('active');
+      $('.player').classList.add('hover');
     }
     
-    hideList() {
+    hideLayer(target='list') {
       $('.player-list').classList.remove('active');
+      $('.player').classList.remove('hover');
     }
     
-    toggleList() {
-      if (this.listShowed) this.hideList();
-      else this.showList();
+    toggleLayer(target='list') {
+      if ($('.player-' + target).classList.contains('active')) this.hideLayer(target);
+      else this.showLayer(target);
     }
     
     setMusic() {
@@ -245,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (this.music.lyrics) {
         let index = 0;
-        while (this.music.lyrics[index] && this.music.lyrics[index].time <= this.currentTime + 0.3) {
+        while (this.music.lyrics[index] && this.music.lyrics[index].time <= this.currentTime + 0.01) {
           index++;
         }
         index--;
@@ -253,10 +295,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (t = $('.player-lyric div.playing')) t.classList.remove('playing');
         if (t = $(`.player-lyric div[data-index="${index}"]`)) {
           t.classList.add('playing');
-          $('.player-lyric .items').scrollTo({
-            top: t.offsetTop - 100,
-            behavior: 'smooth'
-          });
+          if (!$('.player-lyric .items').scrolling) {
+            $('.player-lyric .items').codeScroll = true;
+            scrollTo(
+              $('.player-lyric .items'),
+              t.offsetTop - 100,
+              300,
+            );
+          }
         }
       }
     }
@@ -274,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
       fetch(`lyric/${this.music.lyric}`).then(r => r.text()).then(text => {
         const lines = text.split('\n'); // 按行分割
         this.music.lyrics = [];
-        const timeRegex = /\[(\d{2}):(\d{2})\.(\d{2})\](.*)/; // 正则表达式匹配时间戳和歌词
+        const timeRegex = /\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/; // 正则表达式匹配时间戳和歌词
         let index = 0;
         lines.forEach(line => {
           const match = line.match(timeRegex);
@@ -304,6 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       
     }
+    
   }
   
   const tags = {
@@ -335,6 +382,11 @@ document.addEventListener('DOMContentLoaded', () => {
     'classical': {
       name: '古典哈基米',
       bgcolor: '#e87c56',
+      color: '#fff',
+    },
+    'affectionate': {
+      name: '猫儿这个深情',
+      bgcolor: '#f6495c',
       color: '#fff',
     },
   }

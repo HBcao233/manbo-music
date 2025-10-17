@@ -125,12 +125,13 @@
     id: 12,
     title: 'That Cat',
     artist: '天气温云',
-    tags: ['DingDongJi'],
+    tags: ['DingDongJi', 'affectionate'],
     playCount: 1696401,
     duration: 134,
     cover: 'ThatCat-天气温云.jpg',
     url: 'That Cat - 天气温云.mp3',
-    bvid: 'BV1YzxqzrENb',
+    bvid: 'BV1YzxqzrENb', 
+    lyric: 'ThatCat-天气温云.lrc'
   },
   {
     id: 13,
@@ -142,5 +143,16 @@
     cover: '月光奏鸣曲第三乐章-红晓音Akane.jpg',
     url: '【古典哈基米】月光奏鸣曲第三乐章 - 红晓音Akane.mp3',
     bvid: 'BV1kPJZzeEYQ',
+  },
+  {
+    id: 14,
+    title: 'Rasa Sayang',
+    artist: '我叫小白李',
+    tags: ['vanilla'],
+    playCount: 35978,
+    duration: 67,
+    cover: 'RasaSayang-我叫小白李.jpg',
+    url: '【纯净哈基米】Rasa Sayang - 我叫小白李.mp3',
+    bvid: 'BV1h1H5zeEyb',
   },
 ]
