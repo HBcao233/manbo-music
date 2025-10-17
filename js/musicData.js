@@ -249,4 +249,17 @@ window['musicData'] = [
     lyric: '',
     public_time: 1759489097,
   },
+  {
+    id: 20,
+    title: '基米说',
+    artist: '慎啸',
+    original: '伯虎说-唐伯虎Annie/伯爵Johnny',
+    tags: ['DingDongJi'],
+    playCount: 3676449,
+    duration: 156,
+    cover: '基米说-慎啸.jpg',
+    url: '【哈基米音乐】基米说（完整版） - 慎啸.mp3',
+    bvid: 'BV1sdaHzTEe7',
+    public_time: 1756733881,
+  },
 ];

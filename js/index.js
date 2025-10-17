@@ -405,16 +405,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     const grid = document.getElementById('musicGrid');
+    grid.innerHTML = '';
     if (data.length === 0) {
-      grid.innerHTML = '<div style="color: #f6f6f6; text-align: center; margin: 0">无结果.</div>';
+      $('.result').innerText = '无结果';
     } else {
       const count = data.length;
       const pages = Math.ceil(count / 10);
       const elements = [
-        tag('div', { class: 'pages'}), 
-        tag('div', { class: 'pages'})
+        $('.pages-top'), 
+        $('.pages-bottom'), 
       ];
-      const element = elements[0];
       const toTop = () => {
         document.documentElement.scrollTo(0, $('.music-grid').getBoundingClientRect().top + document.documentElement.scrollTop - $('header').clientHeight);
       }
@@ -455,15 +455,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }));
       }
 
-      grid.innerHTML = `<div style="color: #f6f6f6; text-align: center">${data.length} 个结果</div>`;
-      grid.appendChild(element);
-      
+      $('.result').innerText = `${data.length} 个结果`;
       for (const i of range(p * 10 - 10, Math.min(p * 10, data.length))) {
         const music = data[i];
         const card = createMusicCard(music);
         grid.appendChild(card);
       }
-      grid.appendChild(elements[1]);
     }
   }
 

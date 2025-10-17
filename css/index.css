@@ -13,11 +13,10 @@
   --text-dark: #333;
   --text-light: #666;
 }
-
 body {
   font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
+  height: 100vh;
   position: relative;
   overflow-x: hidden;
 }
@@ -96,7 +95,12 @@ body:has(.player.playing) .logo-icon {
   max-width: 1400px;
   margin: 2rem auto;
   padding: 0 10px;
-  padding-bottom: 4rem;
+  padding-bottom: 6rem;
+}
+@media only screen and (min-width: 768px) {
+  .container {
+    padding-bottom: 8rem;
+  }
 }
 
 /* 分类标签 */
@@ -105,7 +109,7 @@ body:has(.player.playing) .logo-icon {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   padding: 0.5rem 1rem;
   background: var(--card-bg);
   border-radius: 15px;
@@ -153,6 +157,12 @@ body:has(.player.playing) .logo-icon {
 
 .search {
   margin-left: 0.5rem;
+}
+
+.result {
+  color: #f6f6f6; 
+  text-align: center; 
+  margin-bottom: 1rem;
 }
 
 /* 音乐卡片网格 */
@@ -280,7 +290,7 @@ body:has(.player.playing) .logo-icon {
 .pages {
   display: flex;
   justify-content: center;
-  overflow: hidden;
+  margin-bottom: 1rem;
 }
 .pages .page {
   background: #fff;
@@ -319,6 +329,7 @@ body:has(.player.playing) .logo-icon {
 
 footer {
   text-align: center;
+  margin-top: 2rem;
 }
 footer a {
   color: white;
