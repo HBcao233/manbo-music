@@ -289,6 +289,11 @@ document.addEventListener('DOMContentLoaded', () => {
       bgcolor: 'linear-gradient(135deg, #764ba2, #ff6b9d)',
       color: '#fff',
     },
+    'manbo': {
+      name: '歌姬曼波',
+      bgcolor: 'linear-gradient(135deg, #764ba2, #ff6b9d)',
+      color: '#fff',
+    },
     'cover': {
       name: '真人翻唱',
       bgcolor: 'linear-gradient(135deg, #ff6b9d, #764ba2)',
@@ -416,9 +421,10 @@ document.addEventListener('DOMContentLoaded', () => {
         $('.pages-bottom'), 
       ];
       const toTop = () => {
-        document.documentElement.scrollTo(0, $('.music-grid').getBoundingClientRect().top + document.documentElement.scrollTop - $('header').clientHeight);
+        document.documentElement.scrollTo(0, $('.result').getBoundingClientRect().top + document.documentElement.scrollTop - $('header').clientHeight);
       }
       for (const e of elements) {
+        e.innerHTML = '';
         e.appendChild(tag('button', {
           class: ['page', (p==1?'disabled':'')],
           innerHTML: '<i class="fas fa-left"></i>',
