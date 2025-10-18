@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
       this.#mode = v;
       setValue('mode', v)
       $('.player-mode').dataset.mode = this.modes[v];
+      $('.player-mode-list').dataset.mode = this.modes[v];
       if (v == 2) {
         if (this.randomList.length == 0 && getValue('randomList')) {
           this.randomList = getJSON('randomList');
@@ -153,9 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       
-      $('.player-mode').addEventListener('click', () => {
-        this.mode++;
-      });
+      $('.player-mode').addEventListener('click', () => { this.mode++ });
+      $('.player-mode-list').addEventListener('click', () => { this.mode++ });
     }
     
     show() {
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (list[this.index] == i) {
           t.classList.add('playing');
         }
-        t.innerHTML = `<div>${music.title}</div><div style="color: var(--text-light);">&nbsp;- ${music.artist}</div>`;
+        t.innerHTML = `<div class="player-list-title">${music.title}</div><div class="player-list-artist">&nbsp;·&nbsp;${music.artist}</div>`;
         t.onclick = () => {
           this.toMusic(i)
         }

@@ -696,9 +696,25 @@ button {
   padding: 0.5rem 1rem;
   color: #101010;
 }
-.player-layer .items > div.playing {
-  color: #df4b4b;
+
+.player-list-title {
+  color: #252736;
+}
+.player-list-artist {
+  color: var(--text-light);
+  font-size: 0.8rem;
+}
+
+.player-list-item {
+  display: flex;
+  align-items: flex-end;
+}
+
+.player-list-item.playing {
   background: #f6f6f6;
+}
+.player-list-item.playing div {
+  color: #df4b4b;
 }
 
 @keyframes spin {
@@ -747,7 +763,8 @@ button {
   }
 }
 
-.player-mode {
+.player-mode,
+.player-mode-icon {
   width: 1.8rem;
   height: 1.8rem;
   background-repeat: no-repeat;
@@ -776,12 +793,42 @@ button {
   left: 40%;
   right: auto;
 }
-.player-mode[data-mode="list_cycle"] .tooltip-box::before {
+.player-mode[data-mode="list_cycle"] .tooltip-box::before,
+.player-mode-list[data-mode="list_cycle"]::after {
   content: '列表循环';
 }
-.player-mode[data-mode="one_cycle"] .tooltip-box::before {
+.player-mode[data-mode="one_cycle"] .tooltip-box::before,
+.player-mode-list[data-mode="one_cycle"]::after {
   content: '单曲循环';
 }
-.player-mode[data-mode="random"] .tooltip-box::before {
+.player-mode[data-mode="random"] .tooltip-box::before,
+.player-mode-list[data-mode="random"]::after {
   content: '随机播放';
+}
+
+.player-mode-list {
+  width: fit-content;
+  padding: 2px 5px;
+  margin-left: 1rem;
+  border-radius: 30px;
+  background: #f6f6f6;
+  border: 1px solid #e2e2e2;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+.player-mode-icon {
+  width: 1.3rem;
+  height: 1.3rem;
+  margin-right: 2px;
+  background-color: #272634;
+}
+.player-mode-list[data-mode="list_cycle"] .player-mode-icon {
+  -webkit-mask-image: url(../svg/list_cycle.svg);
+}
+.player-mode-list[data-mode="one_cycle"] .player-mode-icon {
+  -webkit-mask-image: url(../svg/one_cycle.svg);
+}
+.player-mode-list[data-mode="random"] .player-mode-icon {
+  -webkit-mask-image: url(../svg/random.svg);
 }
