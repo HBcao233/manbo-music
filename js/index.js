@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (list[this.index] == i) {
           t.classList.add('playing');
         }
-        t.innerHTML = `<div>${music.title}</div>`;
+        t.innerHTML = `<div>${music.title}</div><div style="color: var(--text-light);">&nbsp;- ${music.artist}</div>`;
         t.onclick = () => {
           this.toMusic(i)
         }
