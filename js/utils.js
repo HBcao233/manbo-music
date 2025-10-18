@@ -164,6 +164,22 @@ function tag(tagName, options, func) {
   func && func(newElement)
   return newElement;
 }
+/**
+ * 打乱数组
+ */
+function shuffle(arr) {
+  let i = arr.length;
+  let index, temp;
+  while (i > 0) {
+    index = Math.floor(Math.random() * i);
+    i--;
+    temp = arr[i];
+    arr[i] = arr[index];
+    arr[index] = temp;
+  }
+  return arr;
+}
+
 
 /**
  * 调整提示框位置以避免超出视口
@@ -252,4 +268,111 @@ document.addEventListener('click', (e) => {
     return;
   }
   hideTooltip();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  if ($$('.vertical-slider')) $$('.vertical-slider').forEach(x => {
+    const track = tag('div', { class: 'slider-track' });
+    const fill = tag('div', { class: 'slider-fill' });
+    const thumb = tag('div', { class: 'slider-thumb' });
+    track.appendChild(fill);
+    track.appendChild(thumb);
+    x.appendChild(track);
+    
+    const min = parseInt(x.getAttribute('min')) || 0;
+    const max = parseInt(x.getAttribute('max')) || 100;
+    let currentValue = min;
+    let isDragging = false;
+    let isClick = false;
+    let clientY = 0;
+    
+    Object.defineProperty(x, 'value', {
+      get: function(value) {
+        return currentValue;
+      },
+      set: function(value) {
+        value = Math.max(min, Math.min(max, value));
+        currentValue = value;
+        
+        const percentage = value / 100;
+        const trackHeight = track.offsetHeight;
+        const thumbHeight = thumb.offsetHeight;
+        const maxThumbPosition = trackHeight - thumbHeight;
+        
+        thumb.style.bottom = (percentage * maxThumbPosition) + 'px';
+        fill.style.height = (percentage * 100) + '%';
+      },
+    });
+    
+    function handleMouseMove(e) { 
+      isClick = false;
+      if (!isDragging) return;
+      e.preventDefault();
+      
+      const rect = track.getBoundingClientRect();
+      const y = e.clientY || e.touches[0].clientY;
+      const relativeY = rect.bottom - y;
+      const percentage = relativeY / rect.height;
+      const value = parseInt(percentage * (max - min)) + min;
+      
+      x.value = value;
+      x.dispatchEvent(new Event('input'));
+    }
+    
+    function handleMouseUp() {
+      isDragging = false;
+      x.dispatchEvent(new Event('change'));
+    }
+    
+    function isIndirectChild(childElement, parentElement) {
+      // 检查 childElement 的祖先链中是否存在 parentElement
+      // 循环向上查找，直到找到 parentElement 或到达文档根节点
+      let current = childElement.parentNode;
+      while (current) {
+        if (current === parentElement) {
+          return true;
+        }
+        current = current.parentNode;
+      }
+      return false;
+    }
+    function handleClick(e) {
+      if (!isIndirectChild(e.target, x)) return;
+      e.preventDefault();
+      if (isClick) {
+        const rect = track.getBoundingClientRect();
+        const relativeY = rect.bottom - clientY;
+        const percentage = relativeY / rect.height;
+        const value = parseInt(percentage * (max - min)) + min;
+        x.value = value;
+        x.dispatchEvent(new Event('input'));
+      };
+      isClick = false;
+    }
+    
+    x.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      isClick = true;
+      clientY = e.clientY;
+      e.preventDefault();
+    });
+    x.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      isClick = true;
+      clientY = e.touches[0].clientY;
+    });
+  
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('touchmove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('touchend', handleMouseUp);
+    x.addEventListener('mouseup', handleClick);
+    x.addEventListener('touchend', handleClick);
+    
+    if (x.getAttribute('value')) {
+      x.value = x.getAttribute('value');
+    } else {
+      x.value = x.getAttribute('max');
+    }
+  });
 });

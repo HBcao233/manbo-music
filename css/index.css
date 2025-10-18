@@ -131,6 +131,53 @@ body {
   border-left: 2px solid #c1b91c;
 }
 
+/* 垂直滚动条 */
+.vertical-slider {
+  position: relative;
+  width: 30px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.slider-track {
+  width: 10px;
+  height: 200px;
+  background: #ddd;
+  border-radius: 10px;
+  position: relative;
+}
+
+.slider-fill {
+  position: absolute;
+  width: 100%;
+  background: #ff8aac;
+  bottom: 0;
+  border-radius: 10px;
+  height: 100%;
+}
+
+.slider-thumb {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #ff8aac;
+  border-radius: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.slider-thumb:hover {
+  transform: translateX(-50%) scale(1.2);
+}
+
+.slider-thumb:active {
+  transform: translateX(-50%) scale(1.1);
+}
+
+
 /* 背景装饰 */
 .bg-decoration {
   position: fixed;
@@ -688,8 +735,8 @@ button {
 }
 .player-volume-input {
   width: 30px;
-  appearance: slider-vertical;
 }
+
 @media only screen and (min-width: 768px) {
   .player-volume .tooltip-box {
     left: 50%;
@@ -698,4 +745,43 @@ button {
     left: 35%;
     right: auto;
   }
+}
+
+.player-mode {
+  width: 1.8rem;
+  height: 1.8rem;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border: none;
+}
+.player-mode:hover {
+  transform: unset;
+}
+.player-mode[data-mode="list_cycle"] {
+  background-image: url(../svg/list_cycle.svg);
+}
+.player-mode[data-mode="one_cycle"] {
+  background-image: url(../svg/one_cycle.svg);
+}
+.player-mode[data-mode="random"] {
+  background-image: url(../svg/random.svg);
+}
+.player-mode .tooltip-box {
+  width: auto;
+  white-space: nowrap;
+  left: -80%;
+  padding: 5px 10px;
+}
+.player-mode .tooltip-box::after {
+  left: 40%;
+  right: auto;
+}
+.player-mode[data-mode="list_cycle"] .tooltip-box::before {
+  content: '列表循环';
+}
+.player-mode[data-mode="one_cycle"] .tooltip-box::before {
+  content: '单曲循环';
+}
+.player-mode[data-mode="random"] .tooltip-box::before {
+  content: '随机播放';
 }

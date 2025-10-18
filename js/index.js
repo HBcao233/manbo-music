@@ -1,9 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
   class Player {
+    #mode = 0;
+    modes = ['list_cycle', 'one_cycle', 'random'];
+    
     constructor() {
       this.player = $('.player');
       this.audio = $('.player audio');
-      if (getValue('volume') && parseInt(getValue('volume'))) {
+      if (getInt('volume')) {
         const volume = parseInt(getValue('volume'));
         $('.player-volume-input').value = volume;
         this.audio.volume = volume / 100;
@@ -21,7 +24,39 @@ document.addEventListener('DOMContentLoaded', () => {
       this.music = null;
       this.musicList = [];
       this.index = 0;
+      if (getValue('musicList')) {
+        this.musicList = getJSON('musicList');
+        this.index = getInt('currentMusic') || 0;
+        this.show();
+        this.setMusic();
+      }
+      this.randomList = [];
+      if (getInt('mode')) {
+        this.mode = getInt('mode');
+      }
       this.init();
+    }
+    
+    get mode() {
+      return this.#mode;
+    }
+    
+    set mode(v) {
+      v = parseInt(v) || 0;
+      if (v > 2) v = 0;
+      this.#mode = v;
+      setValue('mode', v)
+      $('.player-mode').dataset.mode = this.modes[v];
+      if (v == 2) {
+        if (this.randomList.length == 0 && getValue('randomList')) {
+          this.randomList = getJSON('randomList');
+        } else {
+          this.shuffleList();
+          this.index = 0;
+        }
+        this.setMusic();
+      }
+      if (this.layerShowed('list')) this.renderList();
     }
     
     get paused() {
@@ -57,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       this.audio.addEventListener('timeupdate', this.progressUpdate.bind(this));
       
-            // 上一曲 / 下一曲
+      // 上一曲 / 下一曲
       $('.player-previous').addEventListener('click', this.previousMusic.bind(this));
       $('.player-next').addEventListener('click', this.nextMusic.bind(this));
       
@@ -116,7 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           $('.player-volume i').classList.add('fa-volume-low');
         }
-      })
+      });
+      
+      $('.player-mode').addEventListener('click', () => {
+        this.mode++;
+      });
     }
     
     show() {
@@ -125,11 +164,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     renderList() {
       $('.player-list .items').innerHTML = '';
-      for (const i of this.musicList) {
+      const list = this.mode != 2 ? this.musicList : this.randomList;
+      for (const i of list) {
         let music = getMusic(i);
         let t = document.createElement('div');
         t.className = 'player-list-item';
-        if (this.musicList[this.index] == i) {
+        if (list[this.index] == i) {
           t.classList.add('playing');
         }
         t.innerHTML = `<div>${music.title}</div>`;
@@ -138,6 +178,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         $('.player-list .items').appendChild(t);
       }
+    }
+    
+    clearList() {
+      this.musicList = [];
+      this.index = 0;
+    }
+    shuffleList() {
+      this.randomList = shuffle([...this.musicList]);
+      setJSON('randomList', this.randomList);
+    }
+    
+    layerShowed(target='list') {
+      return $('.player-' + target).classList.contains('active');
     }
     
     showLayer(target='list') {
@@ -156,12 +209,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     toggleLayer(target='list') {
-      if ($('.player-' + target).classList.contains('active')) this.hideLayer(target);
+      if (this.layerShowed(target)) this.hideLayer(target);
       else this.showLayer(target);
     }
     
     setMusic() {
-      this.music = getMusic(this.musicList[this.index]);
+      const list = this.mode !== 2 ? this.musicList : this.randomList;
+      const music_id = list[this.index];
+      this.music = getMusic(music_id);
       this.audio.src = `musics/${this.music.url}`;
       this.show();
       this.title.textContent = this.music.title;
@@ -188,10 +243,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     toMusic(music_id, autoplay=true) {
       let t;
-      if ((t = this.musicList.indexOf(music_id)) !== -1) {
+      const list = this.mode !== 2 ? this.musicList : this.randomList;
+      if ((t = list.indexOf(music_id)) !== -1) {
         this.index = t;
         setValue('currentMusic', this.index);
-        if (this.listShowed) this.renderList();
+        if (this.layerShowed('list')) this.renderList();
         this.setMusic();
         if (autoplay) this.play();
       }
@@ -201,10 +257,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (this.index < this.musicList.length - 1) {
         this.index++;
       } else {
+        this.shuffleList();
         this.index = 0;
       }
       setValue('currentMusic', this.index);
-      if (this.listShowed) this.renderList();
+      if (this.layerShowed('list')) this.renderList();
       this.setMusic();
       this.play();
     }
@@ -216,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
         this.index = this.musicList.length - 1;
       }
       setValue('currentMusic', this.index);
-      if (this.listShowed) this.renderList();
+      if (this.layerShowed('list')) this.renderList();
       this.setMusic();
       this.play();
     }
@@ -272,7 +329,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     onEnd() {
-      this.nextMusic();
+      switch (this.mode) {
+        case 1:
+          this.currentTime = 0;
+          this.play();
+          break;
+        // 'random'
+        // 'list_cycle'
+        default:
+          this.nextMusic();
+      }
     }
     
     renderLyric() {
@@ -422,12 +488,6 @@ document.addEventListener('DOMContentLoaded', () => {
       currentSearch = t;
     } 
     renderMusicGrid();
-    if (getValue('musicList')) {
-      player.musicList = getJSON('musicList');
-      player.index = getInt('currentMusic') || 0;
-      player.show();
-      player.setMusic();
-    }
   })();
 
   // 渲染音乐网格
@@ -499,10 +559,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const a = tag('a', {
         innerText: '播放全部',
         onclick: () => {
+          player.clearList();
           for (const i of data) {
             player.addMusic(i.id)
           }
-          player.toMusic(data[0].id);
+          player.setMusic();
           player.play();
         }
       });

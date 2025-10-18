@@ -73,7 +73,7 @@
       
       <div class="player-controls">
         <div class="control-buttons">
-          <button><i class="fas fa-random"></i></button>
+          <button class="player-mode tooltip" data-mode="list_cycle"><div class="tooltip-box"></div></button>
           <button class="player-previous"><i class="fas fa-step-backward"></i></button>
           <button class="play-pause"><i class="fas fa-play"></i></button>
           <button class="player-next"><i class="fas fa-step-forward"></i></button>
@@ -81,7 +81,7 @@
             <i class="fas fa-volume"></i>
             <div class="tooltip-box">
               <div class="player-volume-value">50</div>
-              <input class="player-volume-input" type="range" min="0" max="100" value="50"/>
+              <div class="player-volume-input vertical-slider" min="0" max="100" value="50"></div>
             </div>
           </button>
         </div>
