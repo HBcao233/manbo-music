@@ -710,14 +710,28 @@ button {
 
 .player-list-item {
   display: flex;
+  justify-content: space-between;
   align-items: flex-end;
 }
 
+.player-item-info {
+  display: flex;
+  align-items: flex-end;
+}
 .player-list-item.playing {
   background: #f6f6f6;
 }
 .player-list-item.playing div {
   color: #df4b4b;
+}
+
+.player-list-controls {
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+.player-item-delete {
+  color: #ff8aac;
 }
 
 @keyframes spin {
@@ -812,7 +826,6 @@ button {
 .player-mode-list {
   width: fit-content;
   padding: 2px 5px;
-  margin-left: 1rem;
   border-radius: 30px;
   background: #f6f6f6;
   border: 1px solid #e2e2e2;

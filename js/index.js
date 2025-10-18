@@ -25,7 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
       this.musicList = [];
       this.index = 0;
       if (getValue('musicList')) {
-        this.musicList = getJSON('musicList');
+        try {
+          this.musicList = getJSON('musicList');
+        } catch(e) {}
+      }
+      if (this.musicList.length > 0) {
         this.index = getInt('currentMusic') || 0;
         this.show();
         this.setMusic();
@@ -48,10 +52,16 @@ document.addEventListener('DOMContentLoaded', () => {
       setValue('mode', v)
       $('.player-mode').dataset.mode = this.modes[v];
       $('.player-mode-list').dataset.mode = this.modes[v];
-      if (v == 2) {
+      if (this.musicList.length == 0) return;
+      if (v !== 2) {
+        if (this.randomList.length != 0) {
+          this.toMusic(this.randomList[this.index], false)
+        }
+      } else {
         if (this.randomList.length == 0 && getValue('randomList')) {
           this.randomList = getJSON('randomList');
-        } else {
+        }
+        if (this.randomList.length == 0) {
           this.shuffleList();
           this.index = 0;
         }
@@ -156,6 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
       
       $('.player-mode').addEventListener('click', () => { this.mode++ });
       $('.player-mode-list').addEventListener('click', () => { this.mode++ });
+      
+      // 清空播放列表
+      $('.player-list-clear').addEventListener('click', this.clearList.bind(this));
     }
     
     show() {
@@ -172,18 +185,41 @@ document.addEventListener('DOMContentLoaded', () => {
         if (list[this.index] == i) {
           t.classList.add('playing');
         }
-        t.innerHTML = `<div class="player-list-title">${music.title}</div><div class="player-list-artist">&nbsp;·&nbsp;${music.artist}</div>`;
+        t.innerHTML = `<div class="player-item-info"><div class="player-list-title">${music.title}</div><div class="player-list-artist">&nbsp;·&nbsp;${music.artist}</div></div>`;
         t.onclick = () => {
-          this.toMusic(i)
+          this.toMusic(i);
         }
+        let d = tag('div', {
+          class: 'player-item-delete',
+          innerHTML: '<i class="fas fa-xmark"></i>',
+          onclick: (e) => {
+            e.stopPropagation();
+            this.deleteMusic(music.id);
+          },
+        });
+        t.appendChild(d);
         $('.player-list .items').appendChild(t);
       }
     }
     
     clearList() {
       this.musicList = [];
+      this.randomList = [];
+      this.index = 0;
+      setJSON('musicList', []);
+      setJSON('randomList', []);
+      setValue('currentMusic', 0);
+      this.player.classList.remove('active');
+      if (this.layerShowed('list')) this.renderList();
+      setMusic();
+    }
+    
+    setList(list) {
+      this.musicList = [...list];
+      if (this.mode == 2) this.shuffleList();
       this.index = 0;
     }
+    
     shuffleList() {
       this.randomList = shuffle([...this.musicList]);
       setJSON('randomList', this.randomList);
@@ -198,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (t && !t.classList.contains('player-' + target)) {
         t.classList.remove('active');
       }
-      this.renderList();
+      if (target == 'list') this.renderList();
       $('.player-' + target).classList.add('active');
       $('.player').classList.add('hover');
     }
@@ -216,6 +252,15 @@ document.addEventListener('DOMContentLoaded', () => {
     setMusic() {
       const list = this.mode !== 2 ? this.musicList : this.randomList;
       const music_id = list[this.index];
+      if (!music_id) {
+        this.pause();
+        this.music = null;
+        this.audio.src = ``;
+        this.title.textContent = '哈基米音乐';
+        this.artist.textContent = '';
+        this.cover.src = `https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80`;
+        return;
+      }
       this.music = getMusic(music_id);
       this.audio.src = `musics/${this.music.url}`;
       this.show();
@@ -251,6 +296,33 @@ document.addEventListener('DOMContentLoaded', () => {
         this.setMusic();
         if (autoplay) this.play();
       }
+    }
+    
+    deleteMusic(music_id) {
+      const index = this.musicList.indexOf(music_id);
+      const index_random = this.randomList.indexOf(music_id);
+      
+      if (index === -1 && this.index_random === -1) return;
+      if (index !== -1) {
+        this.musicList.splice(index);
+        setJSON('musicList', this.musicList);
+      }
+      if (index_random !== -1) {
+        this.randomList.splice(index_random, 1);
+        setJSON('randomList', this.randomList);
+      }
+      
+      const camp_index = this.mode === 2 ? index_random : index;
+      if (camp_index == this.index) {
+        this.pause();
+        if (this.index > 0) {
+          this.index--;
+          setValue('currentMusic', this.index);
+        }
+        this.setMusic();
+      }
+      
+      if (this.layerShowed('list')) this.renderList();
     }
     
     nextMusic() {
@@ -559,10 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const a = tag('a', {
         innerText: '播放全部',
         onclick: () => {
-          player.clearList();
-          for (const i of data) {
-            player.addMusic(i.id)
-          }
+          player.setList(data.map(x => x.id));
           player.setMusic();
           player.play();
         }
