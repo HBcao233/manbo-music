@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     toMusic(music_id, autoplay=true) {
-      let list = this.musicList;
+      const list = this.mode !== 2 ? this.musicList : this.randomList;
       const index = list.indexOf(music_id);
       if (index === -1) return;
       
@@ -523,6 +523,11 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     'GuGuGaGa': {
       name: '咕咕嘎嘎',
+      bgcolor: 'brown',
+      color: '#fff',
+    },
+    'ShiDaiShaoNianTuan': {
+      name: '石代少年团',
       bgcolor: 'brown',
       color: '#fff',
     },
