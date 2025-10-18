@@ -164,3 +164,92 @@ function tag(tagName, options, func) {
   func && func(newElement)
   return newElement;
 }
+
+/**
+ * 调整提示框位置以避免超出视口
+ */
+function adjustTooltipPosition(tooltip) {
+  const tooltipBox = tooltip.querySelector('.tooltip-box');
+  
+  // 获取元素位置信息
+  const tooltipRect = tooltip.getBoundingClientRect();
+  const tooltipBoxRect = tooltipBox.getBoundingClientRect();
+  
+  // 检查是否超出左边界
+  if (tooltipRect.left < window.innerWidth / 3) {
+    tooltipBox.classList.add('adjust-left');
+  } else {
+    tooltipBox.classList.remove('adjust-left');
+  }
+  if (tooltipRect.right > window.innerWidth / 3 * 2) {
+    tooltipBox.classList.add('adjust-right');
+  } else {
+    tooltipBox.classList.remove('adjust-right');
+  }
+  
+  if (tooltipRect.top < window.innerHeight / 2) {
+    tooltipBox.classList.add('show-below');
+  } else {
+    tooltipBox.classList.remove('show-below');
+  }
+}
+
+/**
+ * 显示提示框
+ */
+function showTooltip(tooltip) {
+  const tooltipBox = tooltip.querySelector('.tooltip-box');
+  if (tooltipBox) {
+    // 调整位置
+    adjustTooltipPosition(tooltip, tooltipBox);
+    tooltip.classList.add('show');
+    tooltip.style.zIndex = 1;
+  }
+}
+
+// 隐藏提示框
+function hideTooltip() {
+  const tooltip = $('.tooltip.show');
+  if (tooltip) {
+    tooltip.classList.remove('show');
+    const t = tooltip.parentElement.querySelectorAll('.tooltip');
+    if (t) t.forEach(i => i.style.zIndex = '');
+  }
+}
+
+/**
+ * 鼠标进入
+ */
+document.addEventListener('mouseenter', (e) => {
+  if (e.target.closest && (tooltip = e.target.closest('.tooltip'))) {
+    showTooltip(tooltip);
+  }
+}, true);
+/**
+ * 鼠标离开
+ */
+document.addEventListener('mouseleave', (e) => {
+  if (e.target.closest('.tooltip')) {
+    hideTooltip();
+  }
+}, true);
+
+/**
+ * 滚动时调整已显示的提示框位置
+ */
+document.addEventListener('scroll', function() {
+  const tooltip = $('.tooltip.show');
+  if (tooltip) adjustTooltipPosition(tooltip);
+}, true);
+
+/** 
+ * 点击事件
+ */
+document.addEventListener('click', (e) => {
+  let tooltip;
+  if (tooltip = e.target.closest('.tooltip')) {
+    showTooltip(tooltip);
+    return;
+  }
+  hideTooltip();
+});

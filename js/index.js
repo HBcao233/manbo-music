@@ -3,7 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     constructor() {
       this.player = $('.player');
       this.audio = $('.player audio');
-      this.audio.volume = 0.5;
+      if (getValue('volume') && parseInt(getValue('volume'))) {
+        const volume = parseInt(getValue('volume'));
+        $('.player-volume-input').value = volume;
+        this.audio.volume = volume / 100;
+        $('.player-volume-value').innerText = volume;
+      } else {
+        this.audio.volume = 0.5;
+      }
       this.title = $('.song-title');
       this.artist = $('.song-artist');
       this.cover = $('.player-cover');
@@ -33,6 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
       return this.audio.duration;
     }
     
+    get volume() {
+      return this.audio.volume;
+    }
+    
+    set volume(v) {
+      this.audio.volume = v;
+    }
+    
     init() {
       this.playPauseBtn.addEventListener('click', this.toggle.bind(this));
       this.progressBar.addEventListener('click', (e) => {
@@ -60,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
           clearTimeout(timer);
           timer = setTimeout(() => {
             if ($('.player:has(.player-layer.active)')) return;
+            if ($('.player:has(.tooltip.show)')) return;
             this.player.classList.remove('hover');
           }, 3000);
         }
@@ -82,6 +98,24 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       $('.player-lyric .items').addEventListener('touchmove', (e) => {
         preventAutoScroll()
+      })
+      
+      // 音量
+      $('.player-volume-input').addEventListener('input', () => {
+        const v = $('.player-volume-input').value;
+        $('.player-volume-value').innerText = v;
+        this.volume = v / 100;
+        setValue('volume', v);
+        $('.player-volume i').classList.remove('fa-volume', 'fa-volume-off', 'fa-volume-low', 'fa-volume-high')
+        if (v == 0) {
+          $('.player-volume i').classList.add('fa-volume-off');
+        } else if (v > 66) {
+          $('.player-volume i').classList.add('fa-volume-high');
+        } else if (v > 33) {
+          $('.player-volume i').classList.add('fa-volume');
+        } else {
+          $('.player-volume i').classList.add('fa-volume-low');
+        }
       })
     }
     
@@ -117,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     hideLayer(target='list') {
-      $('.player-list').classList.remove('active');
+      $('.player-' + target).classList.remove('active');
       $('.player').classList.remove('hover');
     }
     
@@ -461,7 +495,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }));
       }
 
-      $('.result').innerText = `${data.length} 个结果`;
+      $('.result').innerText = `${data.length} 个结果, `;
+      const a = tag('a', {
+        innerText: '播放全部',
+        onclick: () => {
+          for (const i of data) {
+            player.addMusic(i.id)
+          }
+          player.toMusic(data[0].id);
+          player.play();
+        }
+      });
+      $('.result').appendChild(a)
       for (const i of range(p * 10 - 10, Math.min(p * 10, data.length))) {
         const music = data[i];
         const card = createMusicCard(music);
@@ -491,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div style="display: flex; justify-content: space-between; align-items: baseline">
           <div class="music-artist">${music.artist}</div>
-          <a class="music-bvid" target="_blank" href="https://www.bilibili.com/${music.bvid}" onclick="event.stopPropagation()">${music.bvid}</a>
+          <a class="music-bvid" target="_blank" href="https://www.bilibili.com/video/${music.bvid}/" onclick="event.stopPropagation()">${music.bvid}</a>
         </div>
         <div class="music-meta">
           <span class="play-count">▶ ${formatPlayCount(music.playCount)}</span>

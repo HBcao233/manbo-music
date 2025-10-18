@@ -21,6 +21,116 @@ body {
   overflow-x: hidden;
 }
 
+/* 可悬停/点击的文字样式 */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  font-weight: bold;
+  cursor: pointer;
+  border-bottom: 2px dotted currentColor;
+  transition: all 0.3s ease;
+}
+
+.tooltip:hover {
+  transform: scale(1.1);
+}
+
+/* 详情框样式 */
+.tooltip-box {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  width: 200px;
+  height: fit-content;
+  max-height: 400px;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 2px solid #ff8aac;
+  color: #ff8aac;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: normal;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+.tooltip-box > .content {
+  overflow: auto;
+  max-height: 400px;
+}
+.tooltip-box p {
+  white-space: normal;
+}
+.tooltip-box img {
+  max-width: 150px;
+}
+
+/* 详情框箭头 */
+.tooltip-box::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  transform: rotate(45deg) translateY(-50%);
+  border-right: 2px solid #ff8aac;
+  border-bottom: 2px solid #ff8aac;
+}
+
+/* 显示状态 */
+.tooltip.show .tooltip-box {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* 当提示框靠近左边缘时，调整位置 */
+.tooltip-box.adjust-left {
+  left: 0;
+  transform: translateX(0);
+}
+
+.tooltip-box.adjust-left::after {
+  left: 20px;
+}
+
+/* 当提示框靠近右边缘时，调整位置 */
+.tooltip-box.adjust-right {
+  left: auto;
+  right: 0;
+  transform: translateX(0);
+}
+
+.tooltip-box.adjust-right::after {
+  left: auto;
+  right: 20px;
+}
+
+/* 当提示框靠近顶部时，显示在下方 */
+.tooltip-box.show-below {
+  bottom: auto;
+  top: calc(100% + 10px);
+}
+
+.tooltip-box.show-below::after {
+  top: auto;
+  bottom: 100%;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  transform: rotate(45deg) translateY(50%);
+  border: none;
+  border-top: 2px solid #c1b91c;
+  border-left: 2px solid #c1b91c;
+}
+
 /* 背景装饰 */
 .bg-decoration {
   position: fixed;
@@ -164,6 +274,10 @@ body:has(.player.playing) .logo-icon {
   text-align: center; 
   margin-bottom: 1rem;
 }
+.result a {
+  color: #66ccff;
+  text-decoration: underline;
+}
 
 /* 音乐卡片网格 */
 .music-grid {
@@ -272,6 +386,7 @@ body:has(.player.playing) .logo-icon {
   font-size: 0.8rem;
   color: var(--text-light);
   text-align: right;
+  flex-shrink: 0;
 }
 
 .play-count {
@@ -559,4 +674,28 @@ button {
   content: attr(data-time);
   position: absolute;
   left: 0.5rem;
+}
+
+.player-volume {
+  border-bottom: none;
+}
+.player-volume .tooltip-box {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  padding: 5px;
+  left: -30%;
+}
+.player-volume-input {
+  width: 30px;
+  appearance: slider-vertical;
+}
+@media only screen and (min-width: 768px) {
+  .player-volume .tooltip-box {
+    left: 50%;
+  }
+  .player-volume .tooltip-box::after {
+    left: 35%;
+    right: auto;
+  }
 }
