@@ -132,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
       
       let lyric_scroll_timer = null;
       const preventAutoScroll = () => {
-        console.log('x');
         $('.player-lyric .items').scrolling = true;
         clearTimeout(lyric_scroll_timer);
         lyric_scroll_timer = setTimeout(() => {
@@ -211,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setValue('currentMusic', 0);
       this.player.classList.remove('active');
       if (this.layerShowed('list')) this.renderList();
-      setMusic();
+      this.setMusic();
     }
     
     setList(list) {
@@ -278,24 +277,25 @@ document.addEventListener('DOMContentLoaded', () => {
         this.musicList.push(music_id);
         setJSON('musicList', this.musicList);
       }
+      if (this.mode === 2) this.shuffleList();
     }
     
     removeMusic(music_id) {
       let t;
-      if ((t = this.musicList.indexOf(music_id)) !== -1)
-        this.musicList.splice(t, 1);
+      if ((t = this.musicList.indexOf(music_id)) !== -1) this.musicList.splice(t, 1);
+      if (this.mode === 2) this.shuffleList();
     }
     
     toMusic(music_id, autoplay=true) {
-      let t;
-      const list = this.mode !== 2 ? this.musicList : this.randomList;
-      if ((t = list.indexOf(music_id)) !== -1) {
-        this.index = t;
-        setValue('currentMusic', this.index);
-        if (this.layerShowed('list')) this.renderList();
-        this.setMusic();
-        if (autoplay) this.play();
-      }
+      let list = this.musicList;
+      const index = list.indexOf(music_id);
+      if (index === -1) return;
+      
+      this.index = index;
+      setValue('currentMusic', this.index);
+      if (this.layerShowed('list')) this.renderList();
+      this.setMusic();
+      if (autoplay) this.play();
     }
     
     deleteMusic(music_id) {
@@ -378,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let percent = this.currentTime / this.duration * 100;
       this.progress.style.width = percent + '%';
       
-      if (this.music.lyrics) {
+      if (this.music && this.music.lyrics) {
         let index = 0;
         while (this.music.lyrics[index] && this.music.lyrics[index].time <= this.currentTime + 0.01) {
           index++;
@@ -518,6 +518,11 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     'GuanTouYinXiao': {
       name: '罐头音效',
+      bgcolor: 'brown',
+      color: '#fff',
+    },
+    'GuGuGaGa': {
+      name: '咕咕嘎嘎',
       bgcolor: 'brown',
       color: '#fff',
     },

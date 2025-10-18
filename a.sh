@@ -1,1 +1,0 @@
-ffmpeg -i 1.jpg -i 1.m4s -q:a 0 -map 0:v -map 1:a -metadata title="神曼波" -metadata artist="月底没钱君" -metadata album="曼波" -metadata:s:v title="Front cover" -metadata:s:v comment="Cover (front)" "神曼波 - 月底没钱君.mp3"
