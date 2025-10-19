@@ -605,15 +605,17 @@ document.addEventListener('DOMContentLoaded', () => {
           class: ['page', (p==1?'disabled':'')],
           innerHTML: '<i class="fas fa-left"></i>',
           onclick: p > 1 ? () => {
-            p = 1;
-            setParam('p', 1);
+            p--;
+            setParam('p', p);
             renderMusicGrid();
             toTop();
           }: null,
         }));
-        let pages_range = range(1, pages + 1);
-        if (pages > 5) {
+        let pages_range = range(1, Math.min(pages + 1, 6));
+        if (p > pages - 3) {
           pages_range = range(pages - 4, pages + 1);
+        } else if (p > 3) {
+          pages_range = range(p - 2, p + 3);
         }
         for (const i of pages_range) e.appendChild(tag('button', {
           class: ['page', p==i?'active':''],
@@ -629,8 +631,8 @@ document.addEventListener('DOMContentLoaded', () => {
           class: ['page', (p==pages?'disabled':'')],
           innerHTML: '<i class="fas fa-right"></i>',
           onclick: p < pages ? () => {
-            p = pages;
-            setParam('p', pages);
+            p++;
+            setParam('p', p);
             toTop();
             renderMusicGrid();
           }: null,
