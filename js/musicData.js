@@ -886,4 +886,17 @@ window['musicData'] = [
     bvid: 'BV1p5n1zAEAA',
     public_time: 1759287600,
   },
+  {
+    id: 69,
+    title: '听基米的哈',
+    artist: '柴门雪夜',
+    original: '听妈妈的话-周杰伦',
+    tags: ['vanilla'],
+    playCount: 5099,
+    duration: 265,
+    cover: '听基米的哈-柴门雪夜.jpg',
+    url: '【哈基米音乐】听基米的哈 - 柴门雪夜.mp3',
+    bvid: 'BV1gtWtz3EZr',
+    public_time: 1760801199,
+  },
 ];
