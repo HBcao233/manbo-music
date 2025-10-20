@@ -467,8 +467,18 @@ document.addEventListener('DOMContentLoaded', () => {
       color: '#fff',
     },
     'cover': {
-      name: '真人翻唱',
+      name: '真人演唱',
       bgcolor: 'linear-gradient(135deg, #ff6b9d, #764ba2)',
+      color: '#fff',
+    },
+    'PekingOpera': {
+      name: '哈基米京剧',
+      bgcolor: 'linear-gradient(135deg, #ff6b9d, #764ba2)',
+      color: '#fff',
+    },
+    'ai': {
+      name: 'AI歌曲',
+      bgcolor: '#c139ff',
       color: '#fff',
     },
     'DingDongJi': {
@@ -479,11 +489,6 @@ document.addEventListener('DOMContentLoaded', () => {
     'HaNiuMo': {
       name: '哈牛魔',
       bgcolor: 'brown',
-      color: '#fff',
-    },
-    'ai': {
-      name: 'AI歌曲',
-      bgcolor: '#c139ff',
       color: '#fff',
     },
     'classical': {
