@@ -38,6 +38,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (getInt('mode')) {
         this.mode = getInt('mode');
       }
+      
+      // canvas
+      this.canvas = $('.player canvas');
+      this.ctx = this.canvas.getContext('2d');
+      this.canvas.width = window.innerWidth; 
+      this.canvas.height = 100;
+      this.canvasInited = false;
+      this.analyser = null;
+      this.buffer = null;
       this.init();
     }
     
@@ -102,6 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
         this.currentTime = percent * this.duration;
       });
       this.audio.addEventListener('timeupdate', this.progressUpdate.bind(this));
+      this.audio.addEventListener('play', this.canvasInit.bind(this));
+      this.canvasDraw();
       
       // 上一曲 / 下一曲
       $('.player-previous').addEventListener('click', this.previousMusic.bind(this));
@@ -373,11 +384,44 @@ document.addEventListener('DOMContentLoaded', () => {
       else this.pause();
     }
     
+    canvasInit() {
+      if (this.canvasInited) return;
+      const audioCtx = new AudioContext();
+      const source = audioCtx.createMediaElementSource(this.audio);
+      this.analyser = audioCtx.createAnalyser();
+      this.analyser.fftSize = 512;
+      this.buffer = new Uint8Array(this.analyser.frequencyBinCount);
+      source.connect(this.analyser);
+      this.analyser.connect(audioCtx.destination)
+      this.canvasInited = true;
+    }
+    canvasDraw() {
+      requestAnimationFrame(this.canvasDraw.bind(this));
+      if (!this.canvasInited) return;
+      
+      // 清空画布
+      const { width, height } = this.canvas;
+      this.ctx.clearRect(0, 0, width, height);
+      this.analyser.getByteFrequencyData(this.buffer);
+      const len = this.buffer.length / 2.5;
+      const barWidth = width / len;
+      this.ctx.fillStyle = '#66ccffaa';
+      for (let i = 0; i < len; i++) {
+        // 绘制柱状图
+        const v = this.buffer[i];
+        const barHeight = (v / 255) * height;
+        const x = i % 2 == 0 ? width / 2 - (i / 2) * barWidth : width / 2 + ((i + 1) / 2) * barWidth;
+        const y = height - barHeight;
+        this.ctx.fillRect(x, y, barWidth, barHeight);
+      }
+    }
+    
     progressUpdate() {
       $('.player .currentTime').innerText = formatTime(this.currentTime);
       let percent = this.currentTime / this.duration * 100;
       this.progress.style.width = percent + '%';
       
+      // 歌词渲染
       if (this.music && this.music.lyrics) {
         let index = 0;
         while (this.music.lyrics[index] && this.music.lyrics[index].time <= this.currentTime + 0.01) {
@@ -398,6 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
       }
+      
     }
     
     onEnd() {
