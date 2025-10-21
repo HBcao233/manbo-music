@@ -1029,4 +1029,17 @@ window['musicData'] = [
     bvid: 'BV1omnqzqEat',
     public_time: 1759280400,
   },
+  {
+    id: 80,
+    title: '哈之谷 2.0',
+    artist: '零号元素N',
+    original: 'Windy Hill-羽肿',
+    tags: ['vanilla'],
+    playCount: 4001,
+    duration: 158,
+    cover: '哈之谷-零号元素N.jpg',
+    url: '【纯净哈基米】哈之谷 2.0 - 零号元素N.mp3',
+    bvid: 'BV1cvx1z7Eky',
+    public_time: 1760050800,
+  },
 ];

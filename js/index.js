@@ -672,10 +672,12 @@ document.addEventListener('DOMContentLoaded', () => {
           }: null,
         }));
         let pages_range = range(1, Math.min(pages + 1, 6));
-        if (p > 3 && p > pages - 3) {
-          pages_range = range(pages - 4, pages + 1);
-        } else if (p > 3) {
-          pages_range = range(p - 2, p + 3);
+        if (pages > 5) {
+          if (p > pages - 3) {
+            pages_range = range(pages - 4, pages + 1);
+          } else if (p > 3) {
+            pages_range = range(p - 2, Math.min(p + 3, pages + 1));
+          }
         }
         for (const i of pages_range) e.appendChild(tag('button', {
           class: ['page', p==i?'active':''],
