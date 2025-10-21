@@ -858,4 +858,5 @@ button {
 .player canvas {
   position: absolute;
   top: -100px;
+  pointer-events: none;
 }

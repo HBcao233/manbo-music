@@ -1042,4 +1042,17 @@ window['musicData'] = [
     bvid: 'BV1cvx1z7Eky',
     public_time: 1760050800,
   },
+  {
+    id: 81,
+    title: '基米醉酒',
+    artist: '制冰师宫古',
+    original: '贵妃醉酒',
+    tags: ['PekingOpera', 'vanilla'],
+    playCount: 3651,
+    duration: 151,
+    cover: '基米醉酒-制冰师宫古.jpg',
+    url: '【哈基米京剧】基米醉酒 - 制冰师宫古.mp3',
+    bvid: 'BV1UvpczoEsM',
+    public_time: 1757841027,
+  },
 ];
