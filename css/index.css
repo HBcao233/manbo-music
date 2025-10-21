@@ -264,7 +264,7 @@ body:has(.player.playing) .logo-icon {
 .tags {
   position: relative;
   display: flex;
-  gap: 1rem;
+  gap: 0.7rem;
   flex-wrap: wrap;
   margin-bottom: 1rem;
   padding: 0.5rem 1rem;
@@ -274,7 +274,7 @@ body:has(.player.playing) .logo-icon {
 }
 
 .tag {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.8rem;
   background-image: linear-gradient(135deg, #ff6b9d, #764ba2);
   color: white;
   border-radius: 20px;

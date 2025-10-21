@@ -476,19 +476,14 @@ document.addEventListener('DOMContentLoaded', () => {
       bgcolor: 'linear-gradient(135deg, #ff6b9d, #764ba2)',
       color: '#fff',
     },
+    'lyric': {
+      name: '空耳填词',
+      bgcolor: 'linear-gradient(135deg, #ff6b9d, #764ba2)',
+      color: '#fff',
+    },
     'ai': {
       name: 'AI歌曲',
       bgcolor: '#c139ff',
-      color: '#fff',
-    },
-    'DingDongJi': {
-      name: '叮咚鸡',
-      bgcolor: 'brown',
-      color: '#fff',
-    },
-    'HaNiuMo': {
-      name: '哈牛魔',
-      bgcolor: 'brown',
       color: '#fff',
     },
     'classical': {
@@ -499,6 +494,16 @@ document.addEventListener('DOMContentLoaded', () => {
     'affectionate': {
       name: '猫儿这个深情',
       bgcolor: '#f6495c',
+      color: '#fff',
+    },
+    'DingDongJi': {
+      name: '叮咚鸡',
+      bgcolor: 'brown',
+      color: '#fff',
+    },
+    'HaNiuMo': {
+      name: '哈牛魔',
+      bgcolor: 'brown',
       color: '#fff',
     },
     'GuiChu': {
@@ -565,10 +570,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let t;
     let params = (new URLSearchParams(window.location.search));
     if (t = params.get('p')) {
-      p = t;
+      p = parseInt(t);
     }
     if (t = params.get('tag')) {
       currentTag = t;
+      if (t = $(`.tag.active`)) t.classList.remove('active');
+      if (t = $(`.tag[data-tag="${currentTag}"]`)) t.classList.add('active');
     }
     if (t = params.get('search')) {
       $('.search-input').value = t;
@@ -597,6 +604,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       const count = data.length;
       const pages = Math.ceil(count / 10);
+      if (p > pages || p < 1) {
+        p = 1
+      }
       const elements = [
         $('.pages-top'), 
         $('.pages-bottom'), 
@@ -617,7 +627,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }: null,
         }));
         let pages_range = range(1, Math.min(pages + 1, 6));
-        if (p > pages - 3) {
+        if (p > 3 && p > pages - 3) {
           pages_range = range(pages - 4, pages + 1);
         } else if (p > 3) {
           pages_range = range(p - 2, p + 3);
