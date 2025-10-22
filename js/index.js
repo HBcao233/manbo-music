@@ -516,9 +516,14 @@ document.addEventListener('DOMContentLoaded', () => {
       bgcolor: 'linear-gradient(135deg, #ff6b9d, #764ba2)',
       color: '#fff',
     },
-    'PekingOpera': {
-      name: '哈基米京剧',
+    'opera': {
+      name: '哈基米戏曲',
       bgcolor: 'linear-gradient(135deg, #ff6b9d, #764ba2)',
+      color: '#fff',
+    },
+    'no_origin': {
+      name: '原曲不使用',
+      bgcolor: 'linear-gradient(135deg, #764ba2, #ff6b9d)',
       color: '#fff',
     },
     'lyric': {
