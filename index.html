@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/solid.css">
   <link rel="stylesheet" href="css/index.css">
   
+  <script src="https://bilibili-player.vercel.app/BPlayer.min.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/musicData.js"></script>
   <script src="js/index.js"></script>
@@ -68,10 +69,16 @@
       </div>
       <div class="items"></div>
     </div>
+    <div class="player-layer player-mv">
+      <div class="video_box">
+        <video></video>
+      </div>
+    </div>
     
     <div class="content">
       <button class="player-list-btn"><i class="fas fa-list-music"></i></button>
       <button class="player-lyric-btn"><i class="fa-solid fa-angle-up"></i></button>
+      <button class="player-mv-btn"><img src="svg/mv.svg"></button>
       <div class="player-info">
         <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="当前播放" class="player-cover">
         <div class="player-details">

@@ -860,3 +860,24 @@ button {
   top: -100px;
   pointer-events: none;
 }
+
+.player-mv-btn {
+  position: absolute;
+  top: .5rem;
+  right: 4.5rem;
+  visibility: hidden;
+  width: 20px;
+}
+.player.hover .player-mv-btn.active {
+  visibility: visible;
+}
+
+.player-mv {
+  top: -15rem;
+  height: 15rem;
+  transform: translateY(15rem);
+}
+.player-mv video {
+  width: 100%;
+  height: 100%;
+}

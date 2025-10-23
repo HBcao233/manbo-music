@@ -47,6 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
       this.canvasInited = false;
       this.analyser = null;
       this.buffer = null;
+      
+      // mv
+      this.mv_player = new BPlayer('.player-mv video');
+      
       this.init();
     }
     
@@ -179,6 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // 清空播放列表
       $('.player-list-clear').addEventListener('click', this.clearList.bind(this));
+      
+      // mv 
+      $('.player-mv-btn').addEventListener('click', this.toggleLayer.bind(this, 'mv'));
     }
     
     show() {
@@ -252,6 +259,9 @@ document.addEventListener('DOMContentLoaded', () => {
     hideLayer(target='list') {
       $('.player-' + target).classList.remove('active');
       $('.player').classList.remove('hover');
+      if (target == 'mv') {
+        this.mv_player.pause();
+      }
     }
     
     toggleLayer(target='list') {
@@ -269,6 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         this.title.textContent = '哈基米音乐';
         this.artist.textContent = '';
         this.cover.src = `https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80`;
+        $('.player-mv-btn').classList.remove('active');
         return;
       }
       this.music = getMusic(music_id);
@@ -280,6 +291,10 @@ document.addEventListener('DOMContentLoaded', () => {
       $('.player .currentTime').innerText = formatTime(0);
       $('.player .duration').innerText = formatTime(this.music.duration);
       this.renderLyric();
+      if (this.music.mv) {
+        $('.player-mv-btn').classList.add('active');
+        $('.player-mv video').src = `mv/${this.music.mv}`
+      }
     }
     
     addMusic(music_id) {
@@ -536,6 +551,11 @@ document.addEventListener('DOMContentLoaded', () => {
       bgcolor: '#c139ff',
       color: '#fff',
     },
+    'mv': {
+      name: 'MV',
+      bgcolor: '#c139ff',
+      color: '#fff',
+    },
     'classical': {
       name: '古典哈基米',
       bgcolor: '#e87c56',
@@ -737,7 +757,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return `<div class="music-tag" style="background: ${tagx.bgcolor}">${tagx.name}</div>`;
     }).join('');
     card.innerHTML = `
-      <div class="music-cover" style="background-image: url(cover/${music.cover})"></div>
+      <div class="music-cover" style="background-image: url(&quot;cover/${encodeURIComponent(music.cover)}&quot;)"></div>
       <div class="music-info">
         <div style="display: flex; justify-content: space-between; align-items: baseline">
           <div class="music-title">${music.title}</div>
@@ -757,7 +777,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     `;
-    
     card.addEventListener('click', (e) => {
       player.addMusic(music);
       player.toMusic(music.id);

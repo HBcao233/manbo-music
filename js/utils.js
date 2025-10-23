@@ -22,6 +22,7 @@ const setParam = (k, v) => {
   url.search = params;
   window.history.replaceState(null, '', url);
 }
+const isNumber = s => Object.prototype.toString.call(s) === "[object Number]";
 const isString = s => Object.prototype.toString.call(s) === "[object String]";
 const isArrayLike = s => s != null && typeof s[Symbol.iterator] === 'function';
 function formatDateTime(d) {
