@@ -288,12 +288,14 @@ document.addEventListener('DOMContentLoaded', () => {
       this.title.textContent = this.music.title;
       this.artist.textContent = this.music.artist;
       this.cover.src = `cover/${this.music.cover}`;
-      $('.player .currentTime').innerText = formatTime(0);
-      $('.player .duration').innerText = formatTime(this.music.duration);
+      $('.player-controls .currentTime').innerText = formatTime(0);
+      $('.player-controls .duration').innerText = formatTime(this.music.duration);
       this.renderLyric();
       if (this.music.mv) {
         $('.player-mv-btn').classList.add('active');
         $('.player-mv video').src = `mv/${this.music.mv}`
+      } else {
+        $('.player-mv-btn').classList.remove('active');
       }
     }
     
