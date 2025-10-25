@@ -435,8 +435,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     progressUpdate() {
       $('.player .currentTime').innerText = formatTime(this.currentTime);
-      let percent = this.currentTime / this.duration * 100;
+      // 播放进度
+      const percent = this.currentTime / this.duration * 100;
       this.progress.style.width = percent + '%';
+      // 缓存进度
+      const buffer = this.audio.buffered;
+      const buffered = buffer.length > 0 ? buffer.end(buffer.length - 1) : 0;
+      $('.player-controls .buffered').style.width = (buffered / this.duration * 100) + '%';
       
       // 歌词渲染
       if (this.music && this.music.lyrics) {

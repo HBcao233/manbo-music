@@ -1,6 +1,6 @@
-from http.server import SimpleHTTPRequestHandler
+# pip install RangeHTTPServer
+from RangeHTTPServer import RangeRequestHandler
 from http import HTTPStatus
-import http.server
 import socketserver
 import logging
 import sys
@@ -10,7 +10,7 @@ import urllib.parse
 DIRECTORY = './'
 
 
-class NoCacheHTTPRequestHandler(SimpleHTTPRequestHandler):
+class HTTPRequestHandler(RangeRequestHandler):
   allow_reuse_address = True
   
   def __init__(self, *args, **kwargs):
@@ -40,7 +40,7 @@ class NoCacheHTTPRequestHandler(SimpleHTTPRequestHandler):
     
 
 PORT = 8000
-with socketserver.TCPServer(("", PORT), NoCacheHTTPRequestHandler) as httpd:
+with socketserver.TCPServer(("", PORT), HTTPRequestHandler) as httpd:
   print(f"Serving at port {PORT}")
   try:
     httpd.serve_forever()

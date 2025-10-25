@@ -1319,7 +1319,7 @@ window['musicData'] = [
   },
   {
     id: 102,
-    title: '哈完以后化作雪白的灰',
+    title: '哈完以后化作雪白的灰之哈基米逆风翻盘',
     artist: '原味小狗堡',
     original: 'Underground-',
     tags: ['cover', 'vanilla'],

@@ -626,11 +626,15 @@ button {
   cursor: pointer;
 }
 
-.progress {
+.progress-bar .buffered, 
+.progress-bar .progress {
   position: absolute;
   height: 100%;
   background: var(--primary);
   border-radius: 5px;
+}
+.progress-bar .buffered {
+  background: #ff8aac60;
 }
 
 .player-actions {
@@ -673,13 +677,13 @@ button {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   overflow: hidden;
-  z-index: 1001;
+  z-index: 1;
 }
 
 .player-list {
-  top: -10rem;
-  height: 10rem;
-  transform: translateY(10rem);
+  top: -16rem;
+  height: 16rem;
+  transform: translateY(16rem);
 }
 
 .player-lyric {
@@ -689,9 +693,17 @@ button {
   background: rgba(255, 255, 255, 0.95);
 }
 
+.player-list .player-list-clear {
+  visibility: hidden;
+}
+
 .player-layer.active {
   transition: transform .3s ease-in-out;
   transform: translateY(0);
+  visibility: visible;
+}
+
+.player-list.active .player-list-clear {
   visibility: visible;
 }
 
@@ -859,6 +871,7 @@ button {
   position: absolute;
   top: -100px;
   pointer-events: none;
+  z-index: 2;
 }
 
 .player-mv-btn {
