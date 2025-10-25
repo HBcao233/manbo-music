@@ -1329,6 +1329,7 @@ window['musicData'] = [
     url: '【纯净哈基米】哈完以后化作雪白的灰之哈基米逆风翻盘（Underground） - 原味小狗堡.mp3',
     bvid: 'BV1dBnJzDE6W',
     public_time: 1758957203,
+    lyric: '哈基米逆风翻盘-原味小狗堡.lrc',
   },
   {
     id: 103,

@@ -547,6 +547,11 @@ footer a {
   font-weight: 600;
   margin-bottom: 5px;
 }
+@media only screen and (max-width: 768px) {
+  .player-details .song-title {
+    max-width: 9rem;
+  }
+}
 
 .player-details .song-artist {
   color: #aaa;
