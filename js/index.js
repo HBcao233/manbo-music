@@ -577,46 +577,55 @@ document.addEventListener('DOMContentLoaded', () => {
       name: '叮咚鸡',
       bgcolor: 'brown',
       color: '#fff',
+      hide: 1,
     },
     'HaNiuMo': {
       name: '哈牛魔',
       bgcolor: 'brown',
       color: '#fff',
+      hide: 1,
     },
     'GuiChu': {
       name: '鬼畜',
       bgcolor: 'brown',
       color: '#fff',
+      hide: 1,
     },
     'DianGun': {
       name: '电棍',
       bgcolor: 'brown',
       color: '#fff',
+      hide: 1,
     },
     'PangBaoBao': {
       name: '胖宝宝',
       bgcolor: 'brown',
       color: '#fff',
+      hide: 1,
     },
     'LiLiYuanShangMi': {
       name: '离离原上咪',
       bgcolor: 'brown',
       color: '#fff',
+      hide: 1,
     },
     'GuanTouYinXiao': {
       name: '罐头音效',
       bgcolor: 'brown',
       color: '#fff',
+      hide: 1,
     },
     'GuGuGaGa': {
       name: '咕咕嘎嘎',
       bgcolor: 'brown',
       color: '#fff',
+      hide: 1,
     },
     'ShiDaiShaoNianTuan': {
       name: '石代少年团',
       bgcolor: 'brown',
       color: '#fff',
+      hide: 1,
     },
   }
  
@@ -641,6 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let p = 1;
   let currentTag = 'all';
   let currentSearch = '';
+  let showHide = false;
   let player = new Player();
   setupEventListeners();
   (() => {
@@ -670,7 +680,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentSearch) {
       data = data.filter(music => 
         (music.title.toLowerCase().includes(currentSearch.toLowerCase()) ||
-        music.artist.toLowerCase().includes(currentSearch.toLowerCase()))
+        music.artist.toLowerCase().includes(currentSearch.toLowerCase()) ||
+        music.original.toLowerCase().includes(currentSearch.toLowerCase()))
       );
     }
     
@@ -791,10 +802,16 @@ document.addEventListener('DOMContentLoaded', () => {
     return card;
   }
 
-  // 设置事件监听器
-  function setupEventListeners() {
-    // 分类标签
-    for (const [k, v] of [['all', { name: '全部', bgcolor: 'linear-gradient(135deg, #ff6b9d, #764ba2)', color: '#fff'}], ...Object.entries(tags)]) {
+  /**
+   * 创建tags
+   */
+  function createTags() {
+    $('.tags').innerHTML = '';
+    for (const [k, v] of Object.entries({
+      'all': { name: '全部', bgcolor: 'linear-gradient(135deg, #ff6b9d, #764ba2)', color: '#fff'},
+      ...tags,
+    })) {
+      if (!showHide && v.hide) continue;
       let tag = document.createElement('div');
       tag.classList.add('tag');
       if (k === 'all') tag.classList.add('active');
@@ -811,7 +828,19 @@ document.addEventListener('DOMContentLoaded', () => {
         renderMusicGrid();
       });
       $('.tags').appendChild(tag);
-    }
+    };
+  }
+  
+  // 设置事件监听器
+  function setupEventListeners() {
+    // 分类标签
+    createTags();
+    $('.tags-box .expand').addEventListener('click', function() {
+      showHide = !showHide;
+      if (showHide) this.innerText = '[收起]';
+      else this.innerText = '[展开]';
+      createTags();
+    })
     
     // 搜索 
     $('.search-box').addEventListener('submit', (e) => {

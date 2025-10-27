@@ -267,16 +267,19 @@ body:has(.player.playing) .logo-icon {
 }
 
 /* 分类标签 */
-.tags {
+.tags-box {
   position: relative;
-  display: flex;
-  gap: 0.7rem;
-  flex-wrap: wrap;
   margin-bottom: 1rem;
   padding: 0.5rem 1rem;
   background: var(--card-bg);
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+.tags {
+  position: relative;
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
 }
 
 .tag {
@@ -299,6 +302,15 @@ body:has(.player.playing) .logo-icon {
   background: var(--accent-color) !important;
   color: var(--text-dark) !important;
 }
+
+.tags-box .expand {
+  width: fit-content;
+  margin-left: auto;
+}
+.tags-box .expand:active {
+  color: #66ccff;
+}
+
 
 .search-box {
   border-radius: 20px;

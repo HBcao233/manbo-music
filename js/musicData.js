@@ -1345,4 +1345,17 @@ window['musicData'] = [
     public_time: 1747146897,
     lyric: '哈基米逆风翻盘-冷秋猫.lrc',
   },
+  {
+    id: 104,
+    title: '哈气DISCO',
+    artist: '暂离二度',
+    original: '普通DISCO-ilem/洛天依/言和',
+    tags: ['vanilla'],
+    playCount: 123389,
+    duration: 99,
+    cover: '哈气DISCO-暂离二度.jpg',
+    url: '【纯净哈基米】哈气DISCO - 暂离二度.mp3',
+    bvid: 'BV1tqsfzbECP',
+    public_time: 1761451200,
+  },
 ];
